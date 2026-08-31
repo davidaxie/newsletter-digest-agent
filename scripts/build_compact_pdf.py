@@ -10,6 +10,9 @@ import re
 import sys
 from html import unescape
 
+from reportlab import rl_config
+rl_config.useA85 = 0  # raw Flate streams; ~25% smaller output, safer to email
+
 from reportlab.lib.enums import TA_JUSTIFY
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import ParagraphStyle
