@@ -46,11 +46,13 @@ Build ONE compact PDF (Helvetica core fonts, no font embedding, target well unde
 
 ## Step 5: Deliver (verified attachment, every time)
 
-1. Email the PDF to <digest-inbox> with send_message (a self-send; never anything to the personal Gmail). THE ATTACHMENT IS MANDATORY. Subject "Your Newsletter Digest, <Weekday, Month D>". Plain-text body: 2 or 3 sentences on the period covered and top highlights. Attach the PDF: base64-encode with `base64 -i <file> | tr -d '\n'` into a file, `fold -w 1000` it, cat it into your context in at most two chunks, and copy it EXACTLY into the attachments field (mimeType application/pdf, filename newsletter-digest-YYYY-MM-DD.pdf).
+HISTORY: hand-copied base64 corrupted in 3 of 4 real sends (single flipped characters). PROVE the transcription before sending: base64-encode to a single-line digest.b64, Read it, Write the exact string you intend to send to reproduce.b64, and `diff` the two files; repeat the Write-and-diff loop until IDENTICAL (max 4 attempts, then skip to the HTML fallback). Only the proven string may be pasted into send_message.
+
+1. Email the PDF to <digest-inbox> with send_message (a self-send; never anything to the personal Gmail). Subject "Your Newsletter Digest, <Weekday, Month D>". Plain-text body: 2 or 3 sentences on the period covered and top highlights. Attachment: mimeType application/pdf, filename newsletter-digest-YYYY-MM-DD.pdf, content = the proven base64 string.
 
 2. VERIFY the attachment survived, because hand-copied base64 can corrupt silently (it has happened more than once). Compute sha256 of the local PDF. Then get_message on the sent message id with messageFormat RAW; decode with python (base64.urlsafe_b64decode the raw field into an .eml, extract the attachment with the email module, never transcribe by hand), hash the extracted bytes, compare.
 
-3. If the hashes MISMATCH: trash_message the bad sent copy and resend (repeat 1 and 2). After 2 failed resends, trash the last bad copy and send the digest as a FORMATTED HTML EMAIL instead: htmlBody set to the full fragment, subject unchanged plus " (attachment failed, full text below)".
+3. If the hashes MISMATCH: trash_message the bad sent copy and resend (repeat 1 and 2). After 2 failed resends, trash the last bad copy and send the digest as a FORMATTED HTML EMAIL instead: htmlBody set to the full fragment, subject unchanged plus " (full text below)".
 
 ## Step 6: File what you digested
 
